@@ -47,32 +47,32 @@ document.addEventListener("DOMContentLoaded", () => {
     gameGrid.innerHTML = "";
     gameStarted = true;
     restartButton.disabled = false;
-    startButton.disabled = true; 
+    startButton.disabled = true;
 
     shuffle(cards).forEach(card => {
-        const cardElement = document.createElement("div");
-        cardElement.classList.add("card");
-        
-        const cardInner = document.createElement("div");
-        cardInner.classList.add("card-inner");
+      const cardElement = document.createElement("div");
+      cardElement.classList.add("card");
 
-        const cardFront = document.createElement("div");
-        cardFront.classList.add("card-front");
-        
-        const cardBack = document.createElement("div");
-        cardBack.classList.add("card-back");
+      const cardInner = document.createElement("div");
+      cardInner.classList.add("card-inner");
 
-        const fruitSpan = document.createElement("span");
-        fruitSpan.textContent = card;
-        fruitSpan.classList.add(fruitDanceMap[card]);
-        cardBack.appendChild(fruitSpan);
+      const cardFront = document.createElement("div");
+      cardFront.classList.add("card-front");
 
-        cardInner.appendChild(cardFront);
-        cardInner.appendChild(cardBack);
-        cardElement.appendChild(cardInner);
-        
-        cardElement.addEventListener("click", flipCard);
-        gameGrid.appendChild(cardElement);
+      const cardBack = document.createElement("div");
+      cardBack.classList.add("card-back");
+
+      const fruitSpan = document.createElement("span");
+      fruitSpan.textContent = card;
+      fruitSpan.classList.add(fruitDanceMap[card]);
+      cardBack.appendChild(fruitSpan);
+
+      cardInner.appendChild(cardFront);
+      cardInner.appendChild(cardBack);
+      cardElement.appendChild(cardInner);
+
+      cardElement.addEventListener("click", flipCard);
+      gameGrid.appendChild(cardElement);
     });
 
     startTimer(); // Start the timer only when game starts
@@ -82,27 +82,25 @@ document.addEventListener("DOMContentLoaded", () => {
     clearInterval(gameTimer); // Ensure no duplicate timers
     secondsElapsed = 0;
     gameTimer = setInterval(() => {
-        secondsElapsed++;
-        const minutes = Math.floor(secondsElapsed / 60);
-        const seconds = secondsElapsed % 60;
-        timer.textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+      secondsElapsed++;
+      const minutes = Math.floor(secondsElapsed / 60);
+      const seconds = secondsElapsed % 60;
+      timer.textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
     }, 1000);
   }
 
   function flipCard() {
     if (!gameStarted || flippedCards.length === 2) return;
-  
-    const card = this.querySelector('.card-inner');
-  
-    if (!this.classList.contains("flip")) {
-        this.classList.add("flip");
-        flippedCards.push(this);
 
-        if (flippedCards.length === 2) {
-            moves++;
-            moveCounter.textContent = moves;
-            checkForMatch();
-        }
+    if (!this.classList.contains("flip")) {
+      this.classList.add("flip");
+      flippedCards.push(this);
+
+      if (flippedCards.length === 2) {
+        moves++;
+        moveCounter.textContent = moves;
+        checkForMatch();
+      }
     }
   }
 
@@ -114,28 +112,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const fruit2 = cardBack2.querySelector("span");
 
     if (cardBack1.textContent === cardBack2.textContent) {
-        card1.classList.add("match");
-        card2.classList.add("match");
+      card1.classList.add("match");
+      card2.classList.add("match");
 
-        fruit1.style.animation = getComputedStyle(fruit1).animation;
-        fruit2.style.animation = getComputedStyle(fruit2).animation;
+      // Continue the dancing animations if needed:
+      fruit1.style.animation = getComputedStyle(fruit1).animation;
+      fruit2.style.animation = getComputedStyle(fruit2).animation;
 
-        matchedPairs++;
-        flippedCards = [];
+      matchedPairs++;
+      flippedCards = [];
 
-        if (matchedPairs === cards.length / 2) {
-            clearInterval(gameTimer);
-            setTimeout(() => {
-                triggerConfetti(); // 🎊 Trigger confetti animation!
-                alert(`🎉 Congratulations! You completed the game in ${moves} moves and ${timer.textContent}.`);
-            }, 500);
-        }
-    } else {
+      if (matchedPairs === cards.length / 2) {
+        clearInterval(gameTimer);
         setTimeout(() => {
-            card1.classList.remove("flip");
-            card2.classList.remove("flip");
-            flippedCards = [];
-        }, 1000);
+          triggerConfetti(); // 🎊 Trigger confetti animation!
+          alert(`🎉 Congratulations! You completed the game in ${moves} moves and ${timer.textContent}.`);
+        }, 500);
+      }
+    } else {
+      setTimeout(() => {
+        card1.classList.remove("flip");
+        card2.classList.remove("flip");
+        flippedCards = [];
+      }, 1000);
     }
   }
 
@@ -145,20 +144,20 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(confettiContainer);
 
     for (let i = 0; i < 100; i++) {
-        const confetti = document.createElement("div");
-        confetti.classList.add("confetti");
+      const confetti = document.createElement("div");
+      confetti.classList.add("confetti");
 
-        // Randomize positions
-        confetti.style.left = `${Math.random() * 100}vw`;
-        confetti.style.animationDuration = `${Math.random() * 3 + 2}s`; /* Falls slower */
-        confetti.style.animationDelay = `${Math.random()}s`;
+      // Randomize positions and animation settings:
+      confetti.style.left = `${Math.random() * 100}vw`;
+      confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
+      confetti.style.animationDelay = `${Math.random()}s`;
 
-        confettiContainer.appendChild(confetti);
+      confettiContainer.appendChild(confetti);
     }
 
-    // Remove confetti after it reaches the bottom
+    // Remove confetti after the animation completes:
     setTimeout(() => {
-        confettiContainer.remove();
+      confettiContainer.remove();
     }, 5000);
   }
 
@@ -177,48 +176,48 @@ document.addEventListener("DOMContentLoaded", () => {
   let screenHeight = window.innerHeight;
 
   function createFruit(x, y) {
-      const fruitItem = document.createElement("div");
-      fruitItem.classList.add("fruit-item");
-      fruitItem.textContent = fruitOptions[Math.floor(Math.random() * fruitOptions.length)];
-      fruitItem.style.position = "absolute";
-      fruitItem.style.left = `${x}px`;
-      fruitItem.style.top = `${y}px`;
+    const fruitItem = document.createElement("div");
+    fruitItem.classList.add("fruit-item");
+    fruitItem.textContent = fruitOptions[Math.floor(Math.random() * fruitOptions.length)];
+    fruitItem.style.position = "absolute";
+    fruitItem.style.left = `${x}px`;
+    fruitItem.style.top = `${y}px`;
 
-      const animations = ["rotateDance", "bounceDance", "wiggleDance"];
-      fruitItem.style.animation = `${animations[Math.floor(Math.random() * animations.length)]} 3s infinite`;
+    const animations = ["rotateDance", "bounceDance", "wiggleDance"];
+    fruitItem.style.animation = `${animations[Math.floor(Math.random() * animations.length)]} 3s infinite`;
 
-      fruitBorderContainer.appendChild(fruitItem);
+    fruitBorderContainer.appendChild(fruitItem);
   }
 
   function generateFruitBorder() {
-      fruitBorderContainer.innerHTML = "";
-      screenWidth = window.innerWidth;
-      screenHeight = window.innerHeight;
+    fruitBorderContainer.innerHTML = "";
+    screenWidth = window.innerWidth;
+    screenHeight = window.innerHeight;
 
-      const borderPadding = fruitSize * 1.5; // Ensure space around game area
+    const borderPadding = fruitSize * 1.5; // Space around the game area
 
-      for (let x = borderPadding; x < screenWidth - borderPadding; x += fruitSize) {
-          createFruit(x, borderPadding - fruitSize); // Top row
-          createFruit(x, screenHeight - borderPadding); // Bottom row
-      }
+    for (let x = borderPadding; x < screenWidth - borderPadding; x += fruitSize) {
+      createFruit(x, borderPadding - fruitSize); // Top row
+      createFruit(x, screenHeight - borderPadding); // Bottom row
+    }
 
-      for (let y = borderPadding; y < screenHeight - borderPadding; y += fruitSize) {
-          createFruit(borderPadding - fruitSize, y); // Left column
-          createFruit(screenWidth - borderPadding, y); // Right column
-      }
+    for (let y = borderPadding; y < screenHeight - borderPadding; y += fruitSize) {
+      createFruit(borderPadding - fruitSize, y); // Left column
+      createFruit(screenWidth - borderPadding, y); // Right column
+    }
   }
 
   generateFruitBorder();
   window.addEventListener("resize", generateFruitBorder);
 
   const gameContainer = document.querySelector(".game-container");
-  const gameGrid = document.querySelector(".grid");
   const startButton = document.getElementById("start-button");
 
+  // When the user starts the game, change the game container from its initial size to the expanded size.
   startButton.addEventListener("click", () => {
-      gameContainer.style.width = "min(80vw, 600px)"; /* Expand Game */
-      gameContainer.style.top = "calc(50% + 20px)"; /* Move Down */
-      gameGrid.style.display = "grid"; /* Show Grid */
-      generateFruitBorder(); /* Adjust Border */
+    gameContainer.classList.remove("initial");
+    gameContainer.classList.add("expanded");
+    // You can also trigger an update of the fruit border here if needed:
+    generateFruitBorder();
   });
 });

@@ -2,3 +2,8 @@ I attempted to change the main game window into a dynamically changing window th
 This is a reasonable request for a front-end project because we have done this before using flexbox and css-grid along with media querys, and 3rd party libraries such as tailwind.
 It was supposed to work in a way that when the user hits the start game button, the game window expands within the fruit border and is playable in the same way no matter what size it is.
 ChatGPT first failed to implement it, seeing no changes in the size of the window at all. The window expanded past the top and bottom of the border, needing to scroll up and down to see it fully. Then, it dynamically changed the window, but didn't format any of the content in the winodw. When I prompted chatGPT with that, it fixed the cards, but completely messed up the buttons and the title. Lastly, when I prompted chat again, it messed up everything even worse than before.
+
+Changes:
+I managed to use chatGPT to successfully implement the changes for this project. There wern't actually many changes. For the JS file the changes were in the gameContainer style section. The fixed style min sizes were removed favouring classList.remove"initial" and add("expanded"). The style display grid was also removed. What this does is remove initial styles and creates an expanded element.
+
+In the CSS the @keyframes bouncedance was removed in .game-countainer a whole flex section was written up, defining flex rules. Two more sections were added here .game-container.initial and .game-container.expanded, to define minimum sizing. .grid was also set to be 100% width and button was given a 5px margin. In terms of HTML nothing was changed.
