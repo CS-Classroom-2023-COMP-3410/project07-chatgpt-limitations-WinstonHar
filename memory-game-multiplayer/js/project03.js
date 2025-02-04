@@ -8,6 +8,11 @@ const gridColsInput = document.getElementById("gridCols");
 const welcomeContainer = document.querySelector(".welcome-container");
 const gameContainer = document.querySelector(".game-container");
 
+// New elements for head-to-head functionality
+const currentTurnElement = document.getElementById("currentTurn");
+const player1ScoreElement = document.getElementById("player1Score");
+const player2ScoreElement = document.getElementById("player2Score");
+
 let cards = [];
 let flippedCards = [];
 let moves = 0;
@@ -15,6 +20,13 @@ let timerInterval = null;
 let timeElapsed = 0;
 let gridRows = 4;
 let gridCols = 4;
+
+// New variables for players
+let players = [
+  { name: "Player 1", score: 0 },
+  { name: "Player 2", score: 0 }
+];
+let currentPlayer = 0; // 0 for Player 1, 1 for Player 2
 
 // List of animal image filenames
 const animalImages = [
@@ -41,6 +53,14 @@ startGameBtn.addEventListener("click", () => {
 });
 
 function initializeGame() {
+  // Reset players and turn
+  players = [
+    { name: "Player 1", score: 0 },
+    { name: "Player 2", score: 0 }
+  ];
+  currentPlayer = 0;
+  updatePlayerInfo();
+
   const totalCards = gridRows * gridCols;
   const uniquePairs = totalCards / 2;
 
@@ -54,7 +74,7 @@ function initializeGame() {
   cards = shuffleArray(cardPairs);
   createGrid();
   resetGameInfo();
-  startTimer(); // ✅ Fix: Ensure the timer starts when the game begins
+  startTimer(); // Start timer when game begins
 }
 
 function shuffleArray(array) {
@@ -87,6 +107,7 @@ function createGrid() {
 function handleCardClick(e) {
   const clickedCard = e.currentTarget;
 
+  // Do nothing if card is already flipped or matched, or if two cards are already flipped
   if (
     clickedCard.classList.contains("flipped") ||
     clickedCard.classList.contains("matched") ||
@@ -108,29 +129,50 @@ function handleCardClick(e) {
 function checkForMatch() {
   const [card1, card2] = flippedCards;
 
-  // Compare image filenames instead of unique symbols
   if (card1.dataset.symbol === card2.dataset.symbol) {
+    // Cards match: mark them as matched and update player's score
     card1.classList.add("matched");
     card2.classList.add("matched");
+    players[currentPlayer].score++;
+    updatePlayerInfo();
     flippedCards = [];
-    
+
     // Check if all cards are matched
     if (document.querySelectorAll(".card.matched").length === cards.length) {
       clearInterval(timerInterval);
-      alert(`Game completed in ${moves} moves and ${formatTime(timeElapsed)}!`);
+      alert(`Game completed in ${moves} moves and ${formatTime(timeElapsed)}!
+      
+Final Scores:
+Player 1: ${players[0].score} matches
+Player 2: ${players[1].score} matches`);
     }
+    // Player keeps their turn if a match is found.
   } else {
+    // Cards do not match: wait then flip back and switch turn.
     setTimeout(() => {
       card1.classList.remove("flipped");
       card2.classList.remove("flipped");
       flippedCards = [];
+      switchTurn();
     }, 1000);
   }
 }
 
+function switchTurn() {
+  currentPlayer = (currentPlayer + 1) % players.length;
+  updatePlayerInfo();
+}
+
+function updatePlayerInfo() {
+  // Update turn indicator and score board
+  currentTurnElement.textContent = `${players[currentPlayer].name}'s Turn`;
+  player1ScoreElement.textContent = players[0].score;
+  player2ScoreElement.textContent = players[1].score;
+}
+
 function startTimer() {
   timeElapsed = 0;
-  clearInterval(timerInterval); // ✅ Fix: Ensure previous timer is cleared
+  clearInterval(timerInterval); // Clear any previous timer
   timerInterval = setInterval(() => {
     timeElapsed++;
     timer.textContent = formatTime(timeElapsed);
@@ -144,13 +186,13 @@ function formatTime(seconds) {
 function resetGameInfo() {
   moves = 0;
   moveCounter.textContent = moves;
-  clearInterval(timerInterval); // ✅ Fix: Clear timer on game reset
+  clearInterval(timerInterval); // Clear timer on game reset
   timer.textContent = "00:00";
 }
 
 restartBtn.addEventListener("click", () => {
   gameContainer.classList.add("hidden");
   welcomeContainer.classList.remove("hidden");
-  clearInterval(timerInterval); // ✅ Fix: Clear the timer on restart
+  clearInterval(timerInterval); // Clear the timer on restart
   resetGameInfo();
 });

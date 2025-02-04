@@ -1,34 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Memory Matching Game</title>
-  <link rel="stylesheet" href="css/project03.css">
+  <link rel="stylesheet" href="css/project03.css" />
 </head>
 <body>
-
   <div class="welcome-container">
     <h1>Welcome to the Memory Matching Game</h1>
     <p>Flip the cards to find matching pairs! Select a grid size below to start.</p>
 
     <div class="grid-selection">
       <label for="gridRows">Rows:</label>
-      <input type="number" id="gridRows" min="2" max="10" step="1" placeholder="2-10">
-      
+      <input type="number" id="gridRows" min="2" max="10" step="1" placeholder="2-10" />
+
       <label for="gridCols">Columns:</label>
-      <input type="number" id="gridCols" min="2" max="10" step="1" placeholder="2-10">
-      
+      <input type="number" id="gridCols" min="2" max="10" step="1" placeholder="2-10" />
+
       <button id="startGameBtn">Start Game</button>
     </div>
   </div>
 
   <div class="game-container hidden">
     <h1>Memory Matching Game</h1>
-    
+
     <div class="game-info">
       <span>Moves: <span id="moveCounter">0</span></span>
       <span>Time: <span id="timer">00:00</span></span>
+    </div>
+
+    <!-- New player info section -->
+    <div id="playerInfo" class="player-info">
+      <h2 id="currentTurn">Player 1's Turn</h2>
+      <div class="scoreboard">
+        <span>Player 1: <span id="player1Score">0</span> matches</span>
+        <span>Player 2: <span id="player2Score">0</span> matches</span>
+      </div>
     </div>
 
     <div id="gameGrid" class="game-grid"></div>
